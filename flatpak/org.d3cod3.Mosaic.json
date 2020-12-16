@@ -348,18 +348,18 @@
       "buildsystem": "simple",
       "build-commands": [
         "sh scripts/dev/download_libs.sh",
-        "cd libs/openFrameworksCompiled/project && make -j$FLATPAK_BUILDER_N_JOBS Debug",
+        "cd libs/openFrameworksCompiled/project && make -j$FLATPAK_BUILDER_N_JOBS",
         "cd src/fftw3 && ./configure --prefix=`pwd` --enable-float --enable-sse2 --with-incoming-stack-boundary=2 --with-our-malloc16 --disable-shared --enable-static && make MAKEINFO=true -j$FLATPAK_BUILDER_N_JOBS",
-        "mkdir addons/ofxAudioAnalyzer/libs/fftw3f/lib/linux64",
+        "mkdir -p addons/ofxAudioAnalyzer/libs/fftw3f/lib/linux64",
         "cp src/fftw3/.libs/libfftw3f.a addons/ofxAudioAnalyzer/libs/fftw3f/lib/linux64/",
         "cp addons/ofxNDI/libs/libndi/lib/x86_64-linux-gnu/libndi.so.3.7.1 /app/lib",
-        "ln -s /app/lib/libndi.so.3.7.1 /app/lib/libndi.so.3",
-        "cd apps/d3cod3/Mosaic && make CXXFLAGS='-g -O2' -j$FLATPAK_BUILDER_N_JOBS Debug",
-        "mkdir /app/mosaic",
+        "ln -sfn /app/lib/libndi.so.3.7.1 /app/lib/libndi.so.3",
+        "cd apps/d3cod3/Mosaic && make CXXFLAGS='-g -O2' -j$FLATPAK_BUILDER_N_JOBS",
+        "mkdir -p /app/mosaic",
         "cp -ar * /app/mosaic"
       ],
       "post-install": [
-        "ln -s ../mosaic/apps/d3cod3/Mosaic/bin/Mosaic /app/bin/mosaic",
+        "ln -sfn ../mosaic/apps/d3cod3/Mosaic/bin/Mosaic /app/bin/mosaic",
         "install -Dm644 org.d3cod3.Mosaic.appdata.xml /app/share/appdata/org.d3cod3.Mosaic.appdata.xml",
         "install -Dm644 org.d3cod3.Mosaic.desktop /app/share/applications/org.d3cod3.Mosaic.desktop",
         "install -Dm644 apps/d3cod3/Mosaic/bin/data/images/logo_128.png /app/share/icons/hicolor/128x128/apps/org.d3cod3.Mosaic.png"
