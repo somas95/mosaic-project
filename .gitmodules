@@ -4,3 +4,78 @@
 [submodule "scripts/apothecary"]
 	path = scripts/apothecary
 	url = https://github.com/openframeworks/apothecary
+[submodule "addons/ofxAudioAnalyzer"]
+	path = addons/ofxAudioAnalyzer
+	url = https://github.com/d3cod3/ofxAudioAnalyzer.git
+[submodule "addons/ofxAudioFile"]
+	path = addons/ofxAudioFile
+	url = https://github.com/npisanti/ofxAudioFile.git
+[submodule "addons/ofxBTrack"]
+	path = addons/ofxBTrack
+	url = https://github.com/d3cod3/ofxBTrack.git
+[submodule "addons/ofxChromaKeyShader"]
+	path = addons/ofxChromaKeyShader
+	url = https://github.com/d3cod3/ofxChromaKeyShader.git
+[submodule "addons/ofxCv"]
+	path = addons/ofxCv
+	url = https://github.com/kylemcdonald/ofxCv.git
+[submodule "addons/ofxEasing"]
+	path = addons/ofxEasing
+	url = https://github.com/arturoc/ofxEasing.git
+[submodule "addons/ofxFFmpegRecorder"]
+	path = addons/ofxFFmpegRecorder
+	url = https://github.com/d3cod3/ofxFFmpegRecorder.git
+[submodule "addons/ofxFontStash"]
+	path = addons/ofxFontStash
+	url = https://github.com/d3cod3/ofxFontStash.git
+[submodule "addons/ofxGLEditor"]
+	path = addons/ofxGLEditor
+	url = https://github.com/Akira-Hayasaka/ofxGLEditor.git
+[submodule "addons/ofxJSON"]
+	path = addons/ofxJSON
+	url = https://github.com/jeffcrouse/ofxJSON.git
+[submodule "addons/ofxImGui"]
+	path = addons/ofxImGui
+	url = https://github.com/d3cod3/ofxImGui.git
+[submodule "addons/ofxInfiniteCanvas"]
+	path = addons/ofxInfiniteCanvas
+	url = https://github.com/d3cod3/ofxInfiniteCanvas.git
+[submodule "addons/ofxLua"]
+	path = addons/ofxLua
+	url = https://github.com/d3cod3/ofxLua.git
+[submodule "addons/ofxMidi"]
+	path = addons/ofxMidi
+	url = https://github.com/danomatika/ofxMidi.git
+[submodule "addons/ofxMtlMapping2D"]
+	path = addons/ofxMtlMapping2D
+	url = https://github.com/d3cod3/ofxMtlMapping2D.git
+[submodule "addons/ofxNDI"]
+	path = addons/ofxNDI
+	url = https://github.com/d3cod3/ofxNDI.git
+[submodule "addons/ofxPd"]
+	path = addons/ofxPd
+	url = https://github.com/danomatika/ofxPd.git
+[submodule "addons/ofxPdExternals"]
+	path = addons/ofxPdExternals
+	url = https://github.com/d3cod3/ofxPdExternals.git
+[submodule "addons/ofxPDSP"]
+	path = addons/ofxPDSP
+	url = https://github.com/npisanti/ofxPDSP.git
+[submodule "addons/ofxPython"]
+	path = addons/ofxPython
+	url = https://github.com/d3cod3/ofxPython.git
+[submodule "addons/ofxTimeline"]
+	path = addons/ofxTimeline
+	url = https://github.com/d3cod3/ofxTimeline.git
+[submodule "addons/ofxVisualProgramming"]
+	path = addons/ofxVisualProgramming
+	url = https://github.com/d3cod3/ofxVisualProgramming.git
+[submodule "addons/ofxWarp"]
+	path = addons/ofxWarp
+	url = https://github.com/d3cod3/ofxWarp.git
+[submodule "addons/fftw3.3.2-source"]
+	path = addons/fftw3.3.2-source
+	url = https://github.com/d3cod3/fftw3.3.2-source.git
+[submodule "apps/d3cod3/Mosaic"]
+	path = apps/d3cod3/Mosaic
+	url = https://github.com/d3cod3/Mosaic.git

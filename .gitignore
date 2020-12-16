@@ -14,11 +14,9 @@ scripts/apothecary
 
 # rule to avoid non-official addons going into git
 # see addons/.gitignore
-addons/*
 
 # rule to avoid non-official apps going into git
 # see apps/.gitignore
-apps/*
 
 # rule to ignore compiled / downloaded libs
 /libs/*
@@ -132,4 +130,3 @@ Desktop.ini
 #########################
 
 .mailmap
-/apps*/
