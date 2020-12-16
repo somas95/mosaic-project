@@ -1,0 +1,409 @@
+{
+  "app-id": "org.d3cod3.Mosaic",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "20.08",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "mosaic",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=x11",
+    "--socket=pulseaudio",
+    "--device=all",
+    "--share=network",
+    "--filesystem=host",
+    "--filesystem=xdg-run/pipewire-0"
+  ],
+  "cleanup": [
+    "/lib/jack",
+    "/lib/libjack*"
+  ],
+  "add-extensions": {
+    "org.freedesktop.Platform.ffmpeg-full": {
+      "directory": "lib/ffmpeg",
+      "version": "20.08",
+      "add-ld-path": ".",
+      "no-autodownload": true,
+      "autodelete": false
+    }
+  },
+  "cleanup-commands": [
+    "mkdir -p ${FLATPAK_DEST}/lib/ffmpeg",
+    "mkdir -p ${FLATPAK_DEST}/mosaic/apps/d3cod3/Mosaic/bin/data/tmp"
+  ],
+  "modules": [
+    "shared-modules/glu/glu-9.json",
+    "shared-modules/glew/glew.json",
+    "shared-modules/gtk2/gtk2.json",
+    "shared-modules/libusb/libusb.json",
+    "shared-modules/linux-audio/jack2.json",
+    {
+      "name": "rsync",
+      "no-autogen": true,
+      "cleanup": ["/share/man"],
+      "sources": [{
+          "type": "archive",
+          "url": "https://download.samba.org/pub/rsync/src/rsync-3.1.3.tar.gz",
+          "sha256": "55cc554efec5fdaad70de921cd5a5eeb6c29a95524c715f3bbf849235b0800c0"
+      }]
+    },
+    {
+      "name": "iputils",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-DUSE_CAP=false",
+        "-DUSE_IDN=false",
+        "-DBUILD_ARPING=false",
+        "-DBUILD_CLOCKDIFF=false",
+        "-DBUILD_RARPD=false",
+        "-DBUILD_RDISC=false",
+        "-DENABLE_RDISC_SERVER=false",
+        "-DBUILD_TFTPD=false",
+        "-DBUILD_TRACEPATH=false",
+        "-DBUILD_TRACEROUTE6=false",
+        "-DBUILD_NINFOD=false",
+        "-DNINFOD_MESSAGES=false",
+        "-DBUILD_MANS=false",
+        "-DBUILD_HTML_MANS=false",
+        "-DNO_SETCAP_OR_SUID=false",
+        "-DSETCAP_OR_SUID_ARPING=false",
+        "-DSETCAP_OR_SUID_CLOCKDIFF=false",
+        "-DSETCAP_OR_SUID_PING=false",
+        "-DSETCAP_OR_SUID_TRACEROUTE6=false",
+        "-DUSE_GETTEXT=false"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/iputils/iputils/archive/s20190709.tar.gz",
+          "sha256": "a15720dd741d7538dd2645f9f516d193636ae4300ff7dbc8bfca757bf166490a"
+        }
+      ]
+    },
+    {
+      "name": "freeglut",
+      "build-options": {
+        "cflags": "-fcommon",
+        "cxxflags": "-fcommon"
+      },
+      "buildsystem": "cmake-ninja",
+      "builddir": true,
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://sourceforge.net/projects/freeglut/files/freeglut/3.2.1/freeglut-3.2.1.tar.gz",
+          "md5": "cd5c670c1086358598a6d4a9d166949d"
+        }
+      ]
+    },
+    {
+      "name": "libxmu",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://www.x.org/archive//individual/lib/libXmu-1.1.3.tar.bz2",
+          "sha256": "9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731"
+        }
+      ]
+    },
+    {
+      "name": "libraw1394",
+      "rm-configure": true,
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://www.kernel.org/pub/linux/libs/ieee1394/libraw1394-2.1.2.tar.xz",
+          "sha256": "03ccc69761d22c7deb1127fc301010dd13e70e44bb7134b8ff0d07590259a55e"
+        },
+        {
+          "type": "script",
+          "commands": [
+            "autoreconf -fiv"
+          ],
+          "dest-filename": "autogen.sh"
+        }
+      ]
+    },
+    {
+      "name": "freeimage",
+      "buildsystem": "simple",
+      "build-commands": [
+        "sh gensrclist.sh",
+        "sh genfipsrclist.sh",
+        "make -f Makefile.gnu -j $FLATPAK_BUILDER_N_JOBS",
+        "make -f Makefile.fip -j $FLATPAK_BUILDER_N_JOBS",
+        "make -f Makefile.gnu INCDIR=/app/include INSTALLDIR=/app/lib install",
+        "make -f Makefile.fip INCDIR=/app/include INSTALLDIR=/app/lib install"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://downloads.sourceforge.net/project/freeimage/Source%20Distribution/3.18.0/FreeImage3180.zip",
+          "sha256": "f41379682f9ada94ea7b34fe86bf9ee00935a3147be41b6569c9605a53e438fd"
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "sed -i 's/-o root -g root //g' Makefile.{gnu,fip}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "opencv",
+      "buildsystem": "cmake-ninja",
+      "builddir": true,
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DOPENCV_GENERATE_PKGCONFIG=ON",
+        "-OPENCV_ENABLE_NONFREE=ON",
+        "-DWITH_OPENCL=ON",
+        "-DWITH_OPENGL=ON",
+        "-DWITH_TBB=ON",
+        "-DWITH_VULKAN=ON",
+        "-DBUILD_WITH_DEBUG_INFO=OFF",
+        "-DBUILD_TESTS=OFF",
+        "-DBUILD_PERF_TESTS=OFF",
+        "-DBUILD_EXAMPLES=OFF",
+        "-DINSTALL_C_EXAMPLES=OFF",
+        "-DINSTALL_PYTHON_EXAMPLES=OFF",
+        "-DWITH_1394=OFF",
+        "-DWITH_PROTOBUF=ON",
+        "-DBUILD_LIST=calib3d,core,dnn,features2d,flann,highgui,imgcodecs,imgproc,java_bindings_generator,ml,objdetect,photo,python_bindings_generator,python_tests,stitching,video,videoio"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/opencv/opencv/archive/4.2.0.tar.gz",
+          "sha256": "9ccb2192d7e8c03c58fee07051364d94ed7599363f3b0dce1c5e6cc11c1bb0ec"
+        },
+        {
+          "type": "archive",
+          "url": "https://github.com/opencv/opencv_contrib/archive/4.2.0.tar.gz",
+          "sha256": "8a6b5661611d89baa59a26eb7ccf4abb3e55d73f99bb52d8f7c32265c8a43020"
+        }
+      ]
+    },
+    {
+      "name": "assimp",
+      "buildsystem": "cmake-ninja",
+      "config-opts": [
+        "-DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=NO",
+        "-DASSIMP_BUILD_TESTS:BOOL=NO"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/assimp/assimp/archive/v4.1.0.tar.gz",
+          "sha256": "3520b1e9793b93a2ca3b797199e16f40d61762617e072f2d525fad70f9678a71"
+        }
+      ]
+    },
+    {
+      "name": "rtaudio",
+      "config-opts": [
+        "--enable-shared",
+        "--with-alsa",
+        "--with-jack",
+        "--with-pulse"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-5.1.0.tar.gz",
+          "sha256": "ff138b2b6ed2b700b04b406be718df213052d4c952190280cf4e2fab4b61fe09"
+        }
+      ]
+    },
+    {
+      "name": "boost",
+      "buildsystem": "simple",
+      "build-commands": [
+        "./bootstrap.sh --prefix=/app",
+        "./b2 -j $FLATPAK_BUILDER_N_JOBS headers",
+        "./b2 -j $FLATPAK_BUILDER_N_JOBS install"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2",
+          "sha256": "59c9b274bc451cf91a9ba1dd2c7fdcaf5d60b1b3aa83f2c9fa143417cc660722"
+        }
+      ]
+    },
+    {
+      "name": "glfw",
+      "buildsystem": "cmake-ninja",
+      "builddir": true,
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        "-DBUILD_SHARED_LIBS:BOOL=ON"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/glfw/glfw/releases/download/3.3.2/glfw-3.3.2.zip",
+          "sha256": "08a33a512f29d7dbf78eab39bd7858576adcc95228c9efe8e4bc5f0f3261efc7"
+        }
+      ],
+      "cleanup": [
+        "/include",
+        "/lib/pkgconfig"
+      ]
+    },
+    {
+      "name": "liburiparser",
+      "buildsystem": "cmake",
+      "config-opts": [
+        "-DURIPARSER_BUILD_DOCS=OFF",
+        "-DURIPARSER_BUILD_TESTS=OFF"
+      ],
+      "cleanup": [
+        "/bin/uriparse"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/uriparser/uriparser/releases/download/uriparser-0.9.4/uriparser-0.9.4.tar.bz2",
+          "sha256": "b7cdabe5611408fc2c3a10f8beecb881a0c7e93ff669c578cd9e3e6d64b8f87b"
+        }
+      ]
+    },
+    {
+      "name": "pugixml",
+      "buildsystem": "cmake-ninja",
+      "build-options": {
+        "cflags": "-fPIC",
+        "cxxflags": "-fPIC"
+      },
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/zeux/pugixml/releases/download/v1.10/pugixml-1.10.tar.gz",
+          "sha256": "55f399fbb470942410d348584dc953bcaec926415d3462f471ef350f29b5870a"
+        }
+      ]
+    },
+    {
+      "name": "poco",
+      "buildsystem": "cmake",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/pocoproject/poco/archive/poco-1.10.1-release.tar.gz",
+          "sha256": "44592a488d2830c0b4f3bfe4ae41f0c46abbfad49828d938714444e858a00818"
+        }
+      ]
+    },
+    {
+      "name": "libdaemon",
+      "buildsystem": "autotools",
+      "config-opts": [
+        "--prefix=/app"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "git://git.0pointer.net/libdaemon.git",
+          "commit": "9fcc28e0e8f84968d1fb8b6d544a42efb13803ec"
+        }
+      ]
+    },
+    {
+      "name": "libevent",
+      "buildsystem": "autotools",
+      "config-opts": [
+        "--prefix=/app"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/libevent/libevent",
+          "tag": "release-2.1.12-stable"
+        }
+      ]
+    },
+    {
+      "name": "avahi",
+      "buildsystem": "autotools",
+      "config-opts": [
+        "--prefix=/app",
+        "--with-distro=none",
+        "--disable-gtk3",
+        "--disable-mono",
+        "--disable-qt5",
+        "--disable-manpages",
+        "--disable-python",
+        "--with-systemdsystemunitdir=no"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/lathiat/avahi",
+          "tag": "v0.8"
+        }
+      ]
+    },
+    {
+      "name": "mosaic",
+      "buildsystem": "simple",
+      "build-commands": [
+        "sh scripts/dev/download_libs.sh",
+        "cd libs/openFrameworksCompiled/project && make -j$FLATPAK_BUILDER_N_JOBS Debug",
+        "cd src/fftw3 && ./configure --prefix=`pwd` --enable-float --enable-sse2 --with-incoming-stack-boundary=2 --with-our-malloc16 --disable-shared --enable-static && make MAKEINFO=true -j$FLATPAK_BUILDER_N_JOBS",
+        "mkdir addons/ofxAudioAnalyzer/libs/fftw3f/lib/linux64",
+        "cp src/fftw3/.libs/libfftw3f.a addons/ofxAudioAnalyzer/libs/fftw3f/lib/linux64/",
+        "cp addons/ofxNDI/libs/libndi/lib/x86_64-linux-gnu/libndi.so.3.7.1 /app/lib",
+        "ln -s /app/lib/libndi.so.3.7.1 /app/lib/libndi.so.3",
+        "cd apps/d3cod3/Mosaic && make CXXFLAGS='-g -O2' -j$FLATPAK_BUILDER_N_JOBS Debug",
+        "mkdir /app/mosaic",
+        "cp -ar * /app/mosaic"
+      ],
+      "post-install": [
+        "ln -s ../mosaic/apps/d3cod3/Mosaic/bin/Mosaic /app/bin/mosaic",
+        "install -Dm644 org.d3cod3.Mosaic.appdata.xml /app/share/appdata/org.d3cod3.Mosaic.appdata.xml",
+        "install -Dm644 org.d3cod3.Mosaic.desktop /app/share/applications/org.d3cod3.Mosaic.desktop",
+        "install -Dm644 apps/d3cod3/Mosaic/bin/data/images/logo_128.png /app/share/icons/hicolor/128x128/apps/org.d3cod3.Mosaic.png"
+      ],
+      "cleanup": [
+        "src"
+      ],
+      "sources": [
+        {
+          "type": "file",
+          "path": "org.d3cod3.Mosaic.appdata.xml"
+        },
+        {
+          "type": "file",
+          "path": "org.d3cod3.Mosaic.desktop"
+        },
+        {
+          "type": "dir",
+          "path": "../"
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "sed -e '/GL\\/glext.h/ s/^#*/\\/\\//' -i libs/openFrameworks/utils/ofConstants.h"
+          ]
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "sed -i -E 's/ADDON_PKG_CONFIG_LIBRARIES =(.*)opencv\\s/ADDON_PKG_CONFIG_LIBRARIES =\\1opencv4 /g' addons/ofxOpenCv/addon_config.mk",
+            "sed -i -E 's/ADDON_PKG_CONFIG_LIBRARIES =(.*)opencv$/ADDON_PKG_CONFIG_LIBRARIES =\\1opencv4/g' addons/ofxOpenCv/addon_config.mk"
+          ]
+        },
+        {
+          "type": "patch",
+          "path": "openal_fix.patch",
+          "strip-components": 0
+        },
+        {
+          "type": "patch",
+          "path": "make4.3.patch",
+          "strip-components": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mosaic
+Type=Application
+Terminal=false
+Exec=mosaic
+Icon=org.d3cod3.Mosaic
+Categories=Graphics;Development;
+Comment=An openFrameworks based Visual Patching Creative-Coding Platform
